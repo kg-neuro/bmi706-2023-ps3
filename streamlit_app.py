@@ -1,47 +1,56 @@
 import altair as alt
 import pandas as pd
 import streamlit as st
-
+     
 ### P1.2 ###
-
 @st.cache
 def load_data():
     cancer_df = pd.read_csv("https://raw.githubusercontent.com/hms-dbmi/bmi706-2022/main/cancer_data/cancer_ICD10.csv").melt(  # type: ignore
-    id_vars=["Country", "Year", "Cancer", "Sex"],
-    var_name="Age",
-    value_name="Deaths",
-)
+        id_vars=["Country", "Year", "Cancer", "Sex"],
+        var_name="Age",
+        value_name="Deaths",
+    )
 
-pop_df = pd.read_csv("https://raw.githubusercontent.com/hms-dbmi/bmi706-2022/main/cancer_data/population.csv").melt(  # type: ignore
-    id_vars=["Country", "Year", "Sex"],
-    var_name="Age",
-    value_name="Pop",
-)
+    pop_df = pd.read_csv("https://raw.githubusercontent.com/hms-dbmi/bmi706-2022/main/cancer_data/population.csv").melt(  # type: ignore
+        id_vars=["Country", "Year", "Sex"],
+        var_name="Age",
+        value_name="Pop",
+    )
 
-df = pd.merge(left=cancer_df, right=pop_df, how="left")
-df["Pop"] = df.groupby(["Country", "Sex", "Age"])["Pop"].fillna(method="bfill")
-df.dropna(inplace=True)
+    df = pd.merge(left=cancer_df, right=pop_df, how="left")
+    df["Pop"] = df.groupby(["Country", "Sex", "Age"])["Pop"].fillna(method="bfill")
+    df.dropna(inplace=True)
 
-df = df.groupby(["Country", "Year", "Cancer", "Age", "Sex"]).sum().reset_index()
-df["Rate"] = df["Deaths"] / df["Pop"] * 100_000
+    df = df.groupby(["Country", "Year", "Cancer", "Age", "Sex"]).sum().reset_index()
+    df["Rate"] = df["Deaths"] / df["Pop"] * 100_000
     return df
 
 df = load_data()
 
 ### P1.2 ###
+
 st.write("## Age-specific cancer mortality rates")
 
 ### P2.1 ###
 # replace with st.slider
 year = 2012
-st.slider(subset = df[df["Year"] == year], min_value = min(df), max_value=max(df))
+subset = df[df["Year"] == year]
+age_select = st.slider(
+    "Choose the year",
+    subset, 
+    min_value = min(df), 
+    max_value=max(df))
+
+st.write("You selected", age_select)
 ### P2.1 ###
 
 
 ### P2.2 ###
 # replace with st.radio
 sex = "M"
-st.radio(subset = subset[subset["Sex"] == sex])
+subset = subset[subset["Sex"] == sex]
+sex_select = st.radio("Select the sex", subset,index=None)
+st.write("You selected", sex_select)
 ### P2.2 ###
 
 
@@ -57,7 +66,14 @@ countries = [
     "Thailand",
     "Turkey",
 ]
-subset = subset[subset["Country"].isin(countries)]
+
+country_select = st.multiselect(
+    "Select countries to compare",
+    options=subset[subset["Country"].isin(selected_countries)],
+    default=countries 
+)
+
+st.write("You selected", country_select)
 ### P2.3 ###
 
 
@@ -65,6 +81,8 @@ subset = subset[subset["Country"].isin(countries)]
 # replace with st.selectbox
 cancer = "Malignant neoplasm of stomach"
 subset = subset[subset["Cancer"] == cancer]
+cancer_select = st.selectbox("Choose cancer type", subset)
+st.write("You selected", cancer_select)
 ### P2.4 ###
 
 

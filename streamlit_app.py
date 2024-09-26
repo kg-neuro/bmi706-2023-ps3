@@ -100,7 +100,7 @@ ages = [
 
 chart = alt.Chart(subset).mark_bar().encode(
     x=alt.X("Age", sort=ages),
-    y=alt.Y("Rate", title="Mortality rate per 100k"),
+    y=alt.Y("Rate", title="Mortality rate per 100k", scale=alt.Scale(type='log', domain=(0.01, 1000), clamp=True)),
     color="Country",
     tooltip=["Rate"],
 ).properties(

@@ -29,21 +29,19 @@ df["Rate"] = df["Deaths"] / df["Pop"] * 100_000
 df = load_data()
 
 ### P1.2 ###
-
-
 st.write("## Age-specific cancer mortality rates")
 
 ### P2.1 ###
 # replace with st.slider
 year = 2012
-subset = df[df["Year"] == year]
+st.slider(subset = df[df["Year"] == year], min_value = min(df), max_value=max(df))
 ### P2.1 ###
 
 
 ### P2.2 ###
 # replace with st.radio
 sex = "M"
-subset = subset[subset["Sex"] == sex]
+st.radio(subset = subset[subset["Sex"] == sex])
 ### P2.2 ###
 
 

@@ -4,8 +4,9 @@ import streamlit as st
 
 ### P1.2 ###
 
-# Move this code into `load_data` function {{
-cancer_df = pd.read_csv("https://raw.githubusercontent.com/hms-dbmi/bmi706-2022/main/cancer_data/cancer_ICD10.csv").melt(  # type: ignore
+@st.cache
+def load_data():
+    cancer_df = pd.read_csv("https://raw.githubusercontent.com/hms-dbmi/bmi706-2022/main/cancer_data/cancer_ICD10.csv").melt(  # type: ignore
     id_vars=["Country", "Year", "Cancer", "Sex"],
     var_name="Age",
     value_name="Deaths",
@@ -23,36 +24,24 @@ df.dropna(inplace=True)
 
 df = df.groupby(["Country", "Year", "Cancer", "Age", "Sex"]).sum().reset_index()
 df["Rate"] = df["Deaths"] / df["Pop"] * 100_000
-
-# }}
-
-
-@st.cache
-def load_data():
-    ## {{ CODE HERE }} ##
-    df = ...  # remove this line
     return df
 
-
-# Uncomment the next line when finished
-# df = load_data()
+df = load_data()
 
 ### P1.2 ###
-
-
 st.write("## Age-specific cancer mortality rates")
 
 ### P2.1 ###
 # replace with st.slider
 year = 2012
-subset = df[df["Year"] == year]
+st.slider(subset = df[df["Year"] == year], min_value = min(df), max_value=max(df))
 ### P2.1 ###
 
 
 ### P2.2 ###
 # replace with st.radio
 sex = "M"
-subset = subset[subset["Sex"] == sex]
+st.radio(subset = subset[subset["Sex"] == sex])
 ### P2.2 ###
 
 

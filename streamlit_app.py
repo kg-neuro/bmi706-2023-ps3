@@ -5,13 +5,13 @@ import streamlit as st
 ### P1.2 ###
 @st.cache
 def load_data():
-    cancer_df = pd.read_csv("https://raw.githubusercontent.com/hms-dbmi/bmi706-2022/main/cancer_data/cancer_ICD10.csv").melt(  # type: ignore
+    cancer_df = pd.read_csv("https://github.com/hms-dbmi/bmi706-2022/raw/refs/heads/main/cancer_data/cancer_ICD10.csv").melt(  # type: ignore
         id_vars=["Country", "Year", "Cancer", "Sex"],
         var_name="Age",
         value_name="Deaths",
     )
 
-    pop_df = pd.read_csv("https://raw.githubusercontent.com/hms-dbmi/bmi706-2022/main/cancer_data/population.csv").melt(  # type: ignore
+    pop_df = pd.read_csv("https://github.com/hms-dbmi/bmi706-2022/raw/refs/heads/main/cancer_data/population.csv").melt(  # type: ignore
         id_vars=["Country", "Year", "Sex"],
         var_name="Age",
         value_name="Pop",

@@ -93,13 +93,17 @@ ages = [
     "Age >64",
 ]
 
-chart = alt.Chart(subset).mark_bar().encode(
+interval = alt.selection_interval(encodings=['x'])
+chart = alt.Chart(subset).mark_rect().encode(
     x=alt.X("Age:O", title="Age", sort=ages),
     y=alt.Y("Country:N", title="Country"),
     color=alt.Color("Rate:Q", title="Mortality rate per 100k", scale=alt.Scale(type='log', domain=[0.01, 1000], clamp=True)),
     tooltip=["Rate"],
 ).properties(
     title=f"{cancer} mortality rates for {'males' if sex == 'M' else 'females'} in {year}",
+    width = 500
+).add_selection(
+    interval
 )
 ### P2.5 ###
 
@@ -112,3 +116,4 @@ if len(countries_in_subset) != len(countries):
     else:
         missing = set(countries) - set(countries_in_subset)
         st.write("No data available for " + ", ".join(missing) + ".")
+

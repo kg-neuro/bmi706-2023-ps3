@@ -49,10 +49,8 @@ subset = df[df["Year"] == year]
 
 ### P2.2 ###
 # replace with st.radio
-sex = "M"
+sex = st.radio("M", ["M", "F"])
 subset = subset[subset["Sex"] == sex]
-sex_select = st.radio("Select the sex", subset,index=None)
-st.write("You selected", sex_select)
 ### P2.2 ###
 
 
@@ -69,17 +67,16 @@ countries = [
     "Turkey",
 ]
 
-countries = st.multiselect("Countries", countries, default=countries)
-subset = subset[subset["Country"].isin(countries)]
-st.write("You selected", countries)
+country_select= st.multiselect("Countries", countries, default=countries)
+subset = subset[subset["Country"].isin(country_select)]
+st.write("You selected", country_select)
 ### P2.3 ###
 
 
 ### P2.4 ###
 # replace with st.selectbox
-cancer = "Malignant neoplasm of stomach"
-subset = subset[subset["Cancer"] == cancer]
-cancer_select = st.selectbox("Choose cancer type", subset)
+cancer_select = st.selectbox("Cancer", subset["Cancer"].unique(), index = 0)
+subset = subset[subset["Cancer"] == cancer_select]
 st.write("You selected", cancer_select)
 ### P2.4 ###
 

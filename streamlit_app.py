@@ -60,7 +60,7 @@ countries = [
 
 country_select= st.multiselect("Countries", countries, default=countries)
 subset = subset[subset["Country"].isin(country_select)]
-st.write("You selected", country_select)
+#st.write("You selected", country_select)
 ### P2.3 ###
 
 
@@ -68,7 +68,7 @@ st.write("You selected", country_select)
 # replace with st.selectbox
 cancer_select = st.selectbox("Cancer", subset["Cancer"].unique(), index = 0)
 subset = subset[subset["Cancer"] == cancer_select]
-st.write("You selected", cancer_select)
+#st.write("You selected", cancer_select)
 ### P2.4 ###
 
 
@@ -108,3 +108,17 @@ if len(countries_in_subset) != len(countries):
         missing = set(countries) - set(countries_in_subset)
         st.write("No data available for " + ", ".join(missing) + ".")
 
+# Bonus
+population_country_chart = alt.Chart(subset).mark_bar().encode(
+    x=alt.X("sum(Pop)", title="Population size"),
+    y=alt.Y("Country:N", title="Country"),
+    tooltip=["Pop", "Country"],
+).properties(
+    title=f"Population size by country for {'males' if sex == 'M' else 'females'} in {year}",
+    width = 500
+).transform_filter(interval) #add age filter to chart through interval selection of heatmap
+
+
+combined_charts = chart & population_country_chart
+
+st.altair_chart(combined_charts, use_container_width=True)

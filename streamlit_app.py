@@ -58,16 +58,16 @@ countries = [
     "Turkey",
 ]
 
-country_select= st.multiselect("Countries", countries, default=countries)
-subset = subset[subset["Country"].isin(country_select)]
+countries= st.multiselect("Countries", countries, default=countries)
+subset = subset[subset["Country"].isin(countries]
 #st.write("You selected", country_select)
 ### P2.3 ###
 
 
 ### P2.4 ###
 # replace with st.selectbox
-cancer_select = st.selectbox("Cancer", subset["Cancer"].unique(), index = 0)
-subset = subset[subset["Cancer"] == cancer_select]
+cancer = st.selectbox("Cancer", subset["Cancer"].unique(), index = 0)
+subset = subset[subset["Cancer"] == cancer]
 #st.write("You selected", cancer_select)
 ### P2.4 ###
 
@@ -91,7 +91,7 @@ chart = alt.Chart(subset).mark_rect().encode(
     color=alt.Color("Rate:Q", title="Mortality rate per 100k", scale=alt.Scale(type='log', domain=[0.01, 1000], clamp=True)),
     tooltip=["Rate"],
 ).properties(
-    title=f"{cancer_select} mortality rates for {'males' if sex == 'M' else 'females'} in {year}",
+    title=f"{cancer} mortality rates for {'males' if sex == 'M' else 'females'} in {year}",
     width = 500
 ).add_selection(
     interval

@@ -33,8 +33,8 @@ st.write("## Age-specific cancer mortality rates")
 
 ### P2.1 ###
 # replace with st.slider
-min_year = int(df["Year"].min())
-max_year = int(df["Year"].max())
+min_year = df["Year"].min())
+max_year = df["Year"].max())
 
 year = st.slider(
     "Choose the year",
@@ -69,13 +69,9 @@ countries = [
     "Turkey",
 ]
 
-country_select = st.multiselect(
-    "Select countries to compare",
-    options=subset[subset["Country"].isin(selected_countries)],
-    default=countries 
-)
-
-st.write("You selected", country_select)
+countries = st.multiselect("Countries", countries, default=countries)
+subset = subset[subset["Country"].isin(countries)]
+st.write("You selected", countries)
 ### P2.3 ###
 
 
@@ -101,9 +97,9 @@ ages = [
 ]
 
 chart = alt.Chart(subset).mark_bar().encode(
-    x=alt.X("Age", sort=ages),
-    y=alt.Y("Rate", title="Mortality rate per 100k", scale=alt.Scale(type='log', domain=(0.01, 1000), clamp=True)),
-    color="Country",
+    x=alt.X("Age:O", title="Age", sort=ages),
+    y=alt.Y("Country:N", title="Country"),
+    color=alt.Color("Rate:Q", title="Mortality rate per 100k", scale=alt.Scale(type='log', domain=[0.01, 1000], clamp=True)),
     tooltip=["Rate"],
 ).properties(
     title=f"{cancer} mortality rates for {'males' if sex == 'M' else 'females'} in {year}",

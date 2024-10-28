@@ -59,7 +59,7 @@ countries = [
 ]
 
 countries= st.multiselect("Countries", countries, default=countries)
-subset = subset[subset["Country"].isin(countries]
+subset = subset[subset["Country"].isin(countries)
 #st.write("You selected", country_select)
 ### P2.3 ###
 

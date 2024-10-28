@@ -1,11 +1,9 @@
 import altair as alt
 import pandas as pd
 import streamlit as st
-
+     
 ### P1.2 ###
-
-
-@st.cache_data
+@st.cache
 def load_data():
     cancer_df = pd.read_csv("https://raw.githubusercontent.com/hms-dbmi/bmi706-2022/main/cancer_data/cancer_ICD10.csv").melt(  # type: ignore
         id_vars=["Country", "Year", "Cancer", "Sex"],
@@ -25,15 +23,12 @@ def load_data():
 
     df = df.groupby(["Country", "Year", "Cancer", "Age", "Sex"]).sum().reset_index()
     df["Rate"] = df["Deaths"] / df["Pop"] * 100_000
-
-
     return df
 
-
-# Uncomment the next line when finished
 df = load_data()
 
 ### P1.2 ###
+
 st.write("## Age-specific cancer mortality rates")
 
 ### P2.1 ###
@@ -62,15 +57,18 @@ countries = [
     "Thailand",
     "Turkey",
 ]
-countries = st.multiselect("Countries", countries, default=countries)
-subset = subset[subset["Country"].isin(countries)]
+
+country_select= st.multiselect("Countries", countries, default=countries)
+subset = subset[subset["Country"].isin(country_select)]
+st.write("You selected", country_select)
 ### P2.3 ###
 
 
 ### P2.4 ###
 # replace with st.selectbox
-cancer = st.selectbox("Cancer", subset["Cancer"].unique(), index = 0)
-subset = subset[subset["Cancer"] == cancer]
+cancer_select = st.selectbox("Cancer", subset["Cancer"].unique(), index = 0)
+subset = subset[subset["Cancer"] == cancer_select]
+st.write("You selected", cancer_select)
 ### P2.4 ###
 
 
@@ -86,12 +84,9 @@ ages = [
     "Age >64",
 ]
 
-#add interval for bonus question of syncing the bar chart with the heatmap
 interval = alt.selection_interval(encodings=['x'])
-
-#chart: adjusted to a heat map for question 2.5
 chart = alt.Chart(subset).mark_rect().encode(
-    x=alt.X("Age:O", title="Age", sort=ages), #sorted in increasing age group for better visualization
+    x=alt.X("Age:O", title="Age", sort=ages),
     y=alt.Y("Country:N", title="Country"),
     color=alt.Color("Rate:Q", title="Mortality rate per 100k", scale=alt.Scale(type='log', domain=[0.01, 1000], clamp=True)),
     tooltip=["Rate"],
@@ -103,7 +98,7 @@ chart = alt.Chart(subset).mark_rect().encode(
 )
 ### P2.5 ###
 
-#st.altair_chart(chart, use_container_width=True)
+st.altair_chart(chart, use_container_width=True)
 
 countries_in_subset = subset["Country"].unique()
 if len(countries_in_subset) != len(countries):
@@ -113,22 +108,3 @@ if len(countries_in_subset) != len(countries):
         missing = set(countries) - set(countries_in_subset)
         st.write("No data available for " + ", ".join(missing) + ".")
 
-
-### BONUS ###
-# taken inspiration from pset description and demo to do the bar chart showing population size by country
-# want to be able to filter the bar chart by age and also have the bar chart adjust to selected age and countries used in heatmap
-
-#bar chart - use subset as dataframe to ensure it is on the same subset as heatmap
-population_country_chart = alt.Chart(subset).mark_bar().encode(
-    x=alt.X("sum(Pop)", title="Population size"),
-    y=alt.Y("Country:N", title="Country"),
-    tooltip=["Pop", "Country"],
-).properties(
-    title=f"Population size by country for {'males' if sex == 'M' else 'females'} in {year}",
-    width = 500
-).transform_filter(interval) #add age filter to chart through interval selection of heatmap
-
-
-combined_charts = chart & population_country_chart
-
-st.altair_chart(combined_charts, use_container_width=True)
